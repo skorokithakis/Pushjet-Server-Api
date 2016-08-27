@@ -55,6 +55,7 @@ DROP TABLE IF EXISTS `service`;
 CREATE TABLE IF NOT EXISTS `pushjet_api`.`service` (
   `id`                INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `secret`            VARCHAR(32)      NOT NULL,
+  `encryption_key`    VARCHAR(512)     NOT NULL,
   `public`            VARCHAR(40)      NOT NULL,
   `name`              VARCHAR(255)     NOT NULL,
   `icon`              TEXT                 NULL,

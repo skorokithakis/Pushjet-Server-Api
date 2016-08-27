@@ -10,13 +10,18 @@ from .message import Message
 class Service(db.Model):
     id = db.Column(INTEGER(unsigned=True), primary_key=True)
     secret = db.Column(db.VARCHAR(32), nullable=False)
+    encryption_key = db.Column(db.VARCHAR(512), nullable=False)
     public = db.Column(db.VARCHAR(40), nullable=False)
     name = db.Column(db.VARCHAR(255), nullable=False)
     icon = db.Column(db.TEXT, nullable=False, default='')
     timestamp_created = db.Column(db.TIMESTAMP, default=datetime.utcnow)
 
-    def __init__(self, name, icon=''):
+    def __init__(self, name, icon='', encrypted=False):
         self.secret = hashlib.sha1(urandom(100)).hexdigest()[:32]
+        if encrypted:
+            self.encryption_key = hashlib.sha1(urandom(100)).hexdigest()[:32]
+        else:
+            self.encryption_key = ""
         self.name = name
         self.icon = icon
         pub = list(hashlib.new('ripemd160', self.secret).hexdigest())[:40]
@@ -51,7 +56,11 @@ class Service(db.Model):
             "name": self.name,
             "created": int(self.timestamp_created.strftime("%s")),
             "icon": self.icon,
+            "encrypted": True if self.encryption_key else False,
         }
+
         if secret:
             data["secret"] = self.secret
+            data["encryption_key"] = self.encryption_key
+
         return data

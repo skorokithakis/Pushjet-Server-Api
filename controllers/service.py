@@ -12,9 +12,10 @@ service = Blueprint('service', __name__)
 def service_create():
     name = request.form.get('name', '').strip()
     icon = request.form.get('icon', '').strip()
+    encrypted = True if request.form.get('encrypted', '').strip().lower() not in ("0", "false") else False
     if not name:
         return jsonify(Error.ARGUMENT_MISSING('name'))
-    srv = Service(name, icon)
+    srv = Service(name, icon, encrypted=encrypted)
     db.session.add(srv)
     db.session.commit()
     return jsonify({"service": srv.as_dict(True)})
@@ -24,6 +25,7 @@ def service_create():
 def service_info():
     secret = request.form.get('secret', '') or request.args.get('secret', '')
     service_ = request.form.get('service', '') or request.args.get('service', '')
+    print service_
 
     if service_:
         if not is_service(service_):
