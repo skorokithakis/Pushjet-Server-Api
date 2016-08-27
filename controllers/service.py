@@ -12,7 +12,7 @@ service = Blueprint('service', __name__)
 def service_create():
     name = request.form.get('name', '').strip()
     icon = request.form.get('icon', '').strip()
-    encrypted = True if request.form.get('encrypted', '').strip().lower() not in ("0", "false") else False
+    encrypted = request.form.get('encrypted', '').strip().lower() in ("1", "true", "yes")
     if not name:
         return jsonify(Error.ARGUMENT_MISSING('name'))
     srv = Service(name, icon, encrypted=encrypted)
