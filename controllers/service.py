@@ -25,7 +25,6 @@ def service_create():
 def service_info():
     secret = request.form.get('secret', '') or request.args.get('secret', '')
     service_ = request.form.get('service', '') or request.args.get('service', '')
-    print service_
 
     if service_:
         if not is_service(service_):
